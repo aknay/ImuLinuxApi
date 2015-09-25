@@ -11,3 +11,16 @@ class SerialPort:
 
     def readData(self, size):
         return self.serialPort.read(size)
+
+    def clostPort(self):
+        self.serialPort.close()
+
+    def flushBuffer(self):
+        self.serialPort.flushInput()
+        self.serialPort.flushOutput()
+        self.serialPort.flush()
+
+    def getNumberOfByteAvailable(self):
+        return self.serialPort.inWaiting()
+
+
