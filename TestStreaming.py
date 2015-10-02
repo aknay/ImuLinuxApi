@@ -9,10 +9,10 @@ __author__ = 'aknay'
 ##############################################################################################
 import threading
 import Queue
-
+import math
 import Commands
 from CommandCenter import CommandCenter
-
+from VectorAndQuaternionCalculator import VectorAndQuaternionCalculator
 
 
 from time import sleep
@@ -35,11 +35,113 @@ class Producer(threading.Thread):
     def run(self):
 
         commandCenter = CommandCenter("/dev/ttyACM0")
-        #print (commandCenter.getTaredOrientationAsQuaternion(sensorId=1))
+
+        #need to be in T position
+        #buttons are facing up and the LEDs are pointed towards the shoulder
+
+
+        '''
 
 
 
-        commandCenter.getOffsetQuaternion(sensorId=1)
+        offsetOfSensorOne = commandCenter.performOffsetOperation(sensorId=1)
+        #closet to chr(0x0B) gravity = [0,-1,0] and suppliedVector =  [0,0,1]
+
+        #offsetOfSensorTwo = commandCenter.performOffsetOperation(sensorId=2)
+
+        sleep(1)
+
+        while (1):
+
+            forwardVectorOfSensorOne = commandCenter.getDeviceVector(sensorId=1,suppliedVector= [0.0,1.0,0.0],offsetAsQuaternion=offsetOfSensorOne)
+
+            print "forwardVectorOne %s" % (forwardVectorOfSensorOne)
+            #print"Radians: %0.4f\tDegrees: %0.4f" % (angle, math.degrees(angle))
+            #print forwardVectorOfSensorOne
+
+            #forwardVectorOfSensorTwo = commandCenter.getDeviceVector(sensorId=2,suppliedVector= [0.0,0.0,1.0],offsetAsQuaternion=offsetOfSensorTwo)
+
+            #print "forwardVectorTwo"
+            #print forwardVectorOfSensorTwo
+
+            #upVector = commandCenter.getDeviceVector(sensorId=1,suppliedVector= [0.0,1.0,0.0], offsetAsQuaternion=offsetOfSensorOne)
+
+            #print "upVector"
+            #print upVector
+
+
+            sleep(2)
+
+
+
+
+        '''
+
+
+
+        offsetOfSensorOne = commandCenter.performOffsetOperation(sensorId=1)
+        offsetOfSensorTwo = commandCenter.performOffsetOperation(sensorId=2)
+
+        print "offsetOfSensorOne"
+        print offsetOfSensorOne
+
+        print "offsetOfSensorTwo"
+        print offsetOfSensorTwo
+
+
+        while (1):
+
+
+
+            '''
+            forwardVectorOfSensorOne = commandCenter.getDeviceVector(sensorId=1,suppliedVector= [0.0,0.0,1.0],offsetAsQuaternion=offsetOfSensorOne)
+            #forwardVectorOfSensorTwo = commandCenter.getDeviceVector(sensorId=2,suppliedVector= [0.0,0.0,1.0],offsetAsQuaternion=offsetOfSensorTwo)
+            forwardVectorOfSensorTwo = commandCenter.getDeviceVector(sensorId=2,suppliedVector= [0.0,0.0,-1.0],offsetAsQuaternion=offsetOfSensorTwo)
+            print "forwardVectorOne"
+            print forwardVectorOfSensorOne
+
+            print "forwardVectorTwo"
+            print forwardVectorOfSensorTwo
+            # the two sensor rotate around y axis. therefore, x = 0, y = 1 and z = 0
+            #not sure; since left hand rotates clockwise, there is downward vector. I think therefore, need to put -1
+            upVector = commandCenter.getDeviceVector(sensorId=1,suppliedVector= [0.0,-1.0,0.0], offsetAsQuaternion=offsetOfSensorOne)
+
+            print "upVector"
+            angle = commandCenter.getAngleBetweenThreeVectors(forwardVectorOfSensorTwo,forwardVectorOfSensorOne,upVector)
+
+            print "Hinge"
+            print"Radians: %0.4f\tDegrees: %0.4f" % (angle, math.degrees(angle))
+            sleep(1)
+            '''
+
+            #seting z axis as forward vector. rotation about z axis doesn't affect the the vector value.
+            #if we rotate about x or y axiss, there will be change in values
+            forwardVectorOfSensorOne = commandCenter.getDeviceVector(sensorId=1,suppliedVector= [0.0,0.0,1.0],offsetAsQuaternion=offsetOfSensorOne)
+            forwardVectorOfSensorTwo = commandCenter.getDeviceVector(sensorId=2,suppliedVector= [0.0,0.0,-1.0],offsetAsQuaternion=offsetOfSensorTwo)
+            print "forwardVectorOne"
+            print forwardVectorOfSensorOne
+
+            print "forwardVectorTwo"
+            print forwardVectorOfSensorTwo
+
+            # the two sensor rotate around y axis. therefore, x = 0, y = 1 and z = 0
+            #not sure; I think it is using LHR. left hand clockwise 1, right hand anti clockwise -1
+            upVector = commandCenter.getDeviceVector(sensorId=1,suppliedVector= [0.0,-1.0,0.0], offsetAsQuaternion=offsetOfSensorOne)
+
+            print "upVector"
+            angle = commandCenter.getAngleBetweenThreeVectors(forwardVectorOfSensorTwo,forwardVectorOfSensorOne,upVector)
+
+            print "Hinge"
+            print"Radians: %0.4f\tDegrees: %0.4f" % (angle, math.degrees(angle))
+            sleep(1)
+
+
+
+
+
+
+
+     #   commandCenter.calculateDeviceVector(sensorId=1,vector = [1,0,0],offset=offsetOfSensorOne)
 
 
 
